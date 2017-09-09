@@ -1,0 +1,42 @@
+require: rubocop-rspec
+inherit_from: .rubocop_todo.yml
+
+Metrics/MethodLength:
+  Max: 12
+
+Metrics/LineLength:
+  Max: 120
+
+ClassLength:
+  Max: 180
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+
+Metrics/ModuleLength:
+  Exclude:
+  - 'spec/**/*'
+  - 'test/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+  - 'spec/**/*'
+  - 'test/**/*'
+  - '*.gemspec'
+
+Style/Documentation:
+  Exclude:
+  - 'spec/**/*'
+  - 'test/**/*'
+  - 'lib/occi/api/version.rb'
+
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/**/*'
+
+RSpec/MessageExpectation:
+  Exclude:
+    - 'spec/**/*'
