@@ -29,5 +29,9 @@ module Occi
   module API; end
 end
 
+# Explicitly load monkey patches
+require 'occi/monkey_island/net_http'
+require 'occi/monkey_island/faraday_adapter_net_http'
+
 # Explicitly pull in versioning information
 require 'occi/api/version'
