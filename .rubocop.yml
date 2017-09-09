@@ -1,9 +1,5 @@
 inherit_from: .rubocop_todo.yml
 
-All:
-  Exclude:
-  - 'lib/occi/monkey_island/*'
-
 Metrics/MethodLength:
   Max: 12
 
