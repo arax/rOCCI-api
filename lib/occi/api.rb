@@ -1,6 +1,8 @@
 # external deps
 require 'active_support/all'
 require 'yell'
+require 'faraday'
+require 'faraday_middleware'
 require 'occi/core'
 
 # Contains all OCCI-related classes and modules. This module
@@ -26,7 +28,13 @@ module Occi
   #   Occi::API::STAGE_VERSION # => 'alpha.1'
   #
   # @author Boris Parak <parak@cesnet.cz>
-  module API; end
+  module API
+    autoload :Utils, 'occi/api/utils'
+    autoload :Helpers, 'occi/api/helpers'
+    autoload :Middleware, 'occi/api/middleware'
+    autoload :ConnectionManager, 'occi/api/connection_manager'
+    autoload :Client, 'occi/api/client'
+  end
 end
 
 # Explicitly load monkey patches
