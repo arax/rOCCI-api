@@ -1,10 +1,8 @@
 module Occi
   module API
-    module Middleware
-      #
-      #
+    module Auth
       # @author Boris Parak <parak@cesnet.cz>
-      class Keystone < ::Faraday::Middleware; end
+      class Token; end
     end
   end
 end

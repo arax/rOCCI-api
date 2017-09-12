@@ -1,6 +1,6 @@
 module Occi
   module API
-    describe ConnectionManager do
+    describe Authenticator do
       it 'does something'
     end
   end

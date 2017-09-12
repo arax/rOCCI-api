@@ -32,7 +32,9 @@ module Occi
     autoload :Utils, 'occi/api/utils'
     autoload :Helpers, 'occi/api/helpers'
     autoload :Middleware, 'occi/api/middleware'
-    autoload :ConnectionManager, 'occi/api/connection_manager'
+    autoload :Auth, 'occi/api/auth'
+
+    autoload :Authenticator, 'occi/api/authenticator'
     autoload :Client, 'occi/api/client'
   end
 end

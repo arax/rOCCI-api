@@ -1,7 +1,7 @@
 module Occi
   module API
-    module Middleware
-      describe OcciMixinParser do
+    module Auth
+      describe Token do
         it 'does something'
       end
     end

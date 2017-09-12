@@ -1,8 +1,6 @@
 module Occi
   module API
-    #
-    #
     # @author Boris Parak <parak@cesnet.cz>
-    class ConnectionManager; end
+    class Authenticator; end
   end
 end
