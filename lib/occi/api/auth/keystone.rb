@@ -9,16 +9,16 @@ module Occi
         include Yell::Loggable
 
         attr_reader :version
-        attr_writer :method, :endpoint, :credentials
+        attr_accessor :type, :endpoint, :credentials
 
         # @param args [Hash] hash with arguments
         # @option args [String] :version Keystone API version
-        # @option args [Symbol] :method authentication method
+        # @option args [Symbol] :type authentication type
         # @option args [String] :endpoint authentication endpoint
-        # @option args [Hash] :credentials additional data for the selected authentication method
+        # @option args [Hash] :credentials additional data for the selected authentication type
         def initialize(args = {})
           @version = args.fetch(:version, 'v3')
-          @method = args.fetch(:method)
+          @type = args.fetch(:type)
           @endpoint = args.fetch(:endpoint)
           @credentials = args.fetch(:credentials)
 
@@ -30,12 +30,12 @@ module Occi
         #
         # @return [String] token upon successfull authentication
         def authenticate!
-          m_name = "authenticate_#{method}!"
-          unless respond_to?(m_name)
-            raise Occi::API::Errors::AuthenticationError, "#{self.class} does not support method #{method.to_s.inspect}"
+          type_method = "authenticate_#{type}!"
+          unless respond_to?(type_method)
+            raise Occi::API::Errors::AuthenticationError, "#{self.class} does not support type #{type.to_s.inspect}"
           end
 
-          send m_name
+          send type_method
         end
 
         private
