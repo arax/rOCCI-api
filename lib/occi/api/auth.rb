@@ -8,4 +8,4 @@ module Occi
   end
 end
 
-Dir[File.join(File.dirname(__FILE__), 'auth', '*.rb')].each { |file| require file.gsub('.rb', '') }
+Dir[File.join(__dir__, 'auth', '*.rb')].each { |file| require file.gsub('.rb', '') }

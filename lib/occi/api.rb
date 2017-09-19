@@ -29,6 +29,7 @@ module Occi
   #
   # @author Boris Parak <parak@cesnet.cz>
   module API
+    autoload :Errors, 'occi/api/errors'
     autoload :Utils, 'occi/api/utils'
     autoload :Helpers, 'occi/api/helpers'
     autoload :Middleware, 'occi/api/middleware'
