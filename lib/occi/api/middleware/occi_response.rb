@@ -4,7 +4,7 @@ module Occi
   module API
     module Middleware
       # @author Boris Parak <parak@cesnet.cz>
-      class Occi < ::FaradayMiddleware::ResponseMiddleware
+      class OcciResponse < ::FaradayMiddleware::ResponseMiddleware
         MIME_TYPES = %w[application/occi+json].freeze
 
         define_parser do |body, parser_options|

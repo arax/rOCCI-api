@@ -1,7 +1,7 @@
 module Occi
   module API
     module Middleware
-      describe Occi do
+      describe OcciResponse do
         it 'does something'
       end
     end

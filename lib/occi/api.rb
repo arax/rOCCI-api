@@ -43,6 +43,15 @@ end
 # Explicitly load monkey patches
 require 'occi/monkey_island/net_http'
 require 'occi/monkey_island/faraday_adapter_net_http'
+require 'occi/monkey_island/faraday_ssl_options'
+
+# Register Faraday middleware
+Faraday::Response.register_middleware \
+  occi: -> { Occi::API::Middleware::OcciResponse }
+
+Faraday::Request.register_middleware \
+  token: -> { Occi::API::Middleware::Token },
+  occi: -> { Occi::API::Middleware::OcciRequest }
 
 # Explicitly pull in versioning information
 require 'occi/api/version'

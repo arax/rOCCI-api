@@ -8,6 +8,8 @@ module Occi
       class Keystone
         include Yell::Loggable
 
+        DEFAULT_VERSION = 'v3'.freeze
+
         attr_reader :version
         attr_accessor :type, :endpoint, :credentials
 
@@ -17,7 +19,7 @@ module Occi
         # @option args [String] :endpoint authentication endpoint
         # @option args [Hash] :credentials additional data for the selected authentication type
         def initialize(args = {})
-          @version = args.fetch(:version, 'v3')
+          @version = args.fetch(:version, DEFAULT_VERSION)
           @type = args.fetch(:type)
           @endpoint = args.fetch(:endpoint)
           @credentials = args.fetch(:credentials)
@@ -28,17 +30,38 @@ module Occi
         # Performs external authentication and returns a token that can be
         # passed directly to `Occi::API::Client` instances for direct endpoint access.
         #
+        # @param scope [String] authenticate within this scope (project, group, ...)
+        # @param token [String] token for scoped authentication, if scope is given
         # @return [String] token upon successfull authentication
-        def authenticate!
-          type_method = "authenticate_#{type}!"
-          unless respond_to?(type_method)
-            raise Occi::API::Errors::AuthenticationError, "#{self.class} does not support type #{type.to_s.inspect}"
-          end
-
-          send type_method
+        def authenticate(scope, token)
+          typed! :authenticate, scope, token
         end
+        alias authenticate! authenticate
+
+        # Returns a list of available scopes which can be used later for scoped token retrieval.
+        #
+        # @example
+        #    scopes "MY_TOKEN" # => [{ id: '1', name: 'project1' }, { id: '2', name: 'project2' }]
+        #
+        # @param token [String] unscoped token
+        # @return [Array] list of available scopes
+        def scopes(token)
+          typed! :scopes, token
+        end
+        alias scopes! scopes
 
         private
+
+        # :nodoc:
+        def typed!(prefix, *args)
+          type_method = "#{prefix}_#{type}!"
+          unless respond_to?(type_method)
+            raise Occi::API::Errors::AuthenticationError,
+                  "#{self.class} does not support type #{type.to_s.inspect} in version #{version.inspect}"
+          end
+
+          send type_method, *args
+        end
 
         # :nodoc:
         def insert_api!
@@ -50,6 +73,42 @@ module Occi
           KeystoneVersions.const_get version.classify
         rescue NameError
           raise Occi::API::Errors::AuthenticationError, "#{self.class} in version #{version.inspect} is not supported"
+        end
+
+        # :nodoc:
+        def make(verb, relative_url, request = {})
+          conn = connection_factory(request)
+
+          begin
+            conn.send(verb) do |req|
+              req.url "#{endpoint}#{relative_url}"
+              req.headers.merge! request[:headers] if request[:headers]
+              req.body request[:body] if request[:body]
+            end
+          rescue Faraday::Error::ClientError => ex
+            raise Occi::API::Errors::AuthenticationError, ex.message
+          end
+        end
+
+        # :nodoc:
+        def connection_factory(opts)
+          Faraday.new do |faraday|
+            connection_middleware faraday, opts
+            faraday.ssl.merge! opts[:ssl] if opts[:ssl]
+            faraday.adapter :net_http
+          end
+        end
+
+        # :nodoc:
+        def connection_middleware(faraday, opts)
+          # Request
+          faraday.request :token, opts[:token] if opts[:token]
+          faraday.request :oauth2, opts[:oauth2], token_type: 'bearer' if opts[:oauth2]
+          faraday.request :json
+          # Response
+          faraday.response :logger, logger
+          faraday.response :raise_error
+          faraday.response :json
         end
       end
     end
