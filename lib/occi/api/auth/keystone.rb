@@ -21,7 +21,7 @@ module Occi
         def initialize(args = {})
           @version = args.fetch(:version, DEFAULT_VERSION)
           @type = args.fetch(:type)
-          @endpoint = args.fetch(:endpoint)
+          @endpoint = args.fetch(:endpoint).chomp('/')
           @credentials = args.fetch(:credentials)
 
           insert_api!
@@ -82,8 +82,10 @@ module Occi
           begin
             conn.send(verb) do |req|
               req.url "#{endpoint}#{relative_url}"
+              req.headers['Accept'] = 'application/json'
+              req.headers['Content-Type'] = 'application/json'
               req.headers.merge! request[:headers] if request[:headers]
-              req.body request[:body] if request[:body]
+              req.body = request[:body] if request[:body]
             end
           rescue Faraday::Error::ClientError => ex
             raise Occi::API::Errors::AuthenticationError, ex.message

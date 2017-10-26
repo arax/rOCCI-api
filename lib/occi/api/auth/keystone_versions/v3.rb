@@ -18,19 +18,19 @@ module Occi
 
             # unscoped
             url = federated_url.gsub('%TYPE%', 'mapped')
-            response = make(:post, url, ssl: ssl_opts)
+            response = make(:get, url, ssl: ssl_opts)
             response.headers[SUBJECT_TOKEN_HEADER]
           end
 
           # @param scope [String] authenticate within this scope (project, group, ...)
           # @param token [String] token for scoped authentication, if scope is given
           # @return [String] token upon successfull authentication
-          def authenticate_oidc!(scope, token)
+          def authenticate_oauth2!(scope, token)
             return authenticate_scoped!(scope, token) if scope
 
             # unscoped
             url = federated_url.gsub('%TYPE%', 'oidc')
-            response = make(:post, url, ssl: ssl_opts, oauth2: credentials[:token])
+            response = make(:get, url, ssl: ssl_opts, oauth2: credentials[:token])
             response.headers[SUBJECT_TOKEN_HEADER]
           end
 
@@ -68,7 +68,7 @@ module Occi
             response.body['projects'].map { |p| { id: p['id'], name: p['name'] } }
           end
           alias scopes_voms! scopes_all!
-          alias scopes_oidc! scopes_all!
+          alias scopes_oauth2! scopes_all!
 
           # :nodoc:
           def federated_url

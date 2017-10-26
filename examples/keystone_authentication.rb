@@ -3,7 +3,7 @@ require 'occi/api'
 Yell.new STDERR, name: Object
 
 authr = Occi::API::Authenticator.new(type: :keystone) do |opts|
-  opts[:type] = :oidc
+  opts[:type] = :oauth2
   opts[:endpoint] = 'https://localhost:5000/'
   opts[:credentials] = { token: 'THIS_IS_MY_ACCESS_TOKEN', identity_provider: 'egi.eu' }
 end

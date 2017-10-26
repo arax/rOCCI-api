@@ -18,9 +18,10 @@ module Occi
           @app.call env
         end
 
-        def initialize(app, options = {})
+        def initialize(app, token, options = {})
           super(app)
-          @token = options.fetch(:token)
+          @token = token
+          @options = options
           warn 'Warning: Occi::API::Middleware::Token initialized with an empty token' if token.empty?
         end
       end
