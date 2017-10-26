@@ -108,9 +108,9 @@ module Occi
           faraday.request :oauth2, opts[:oauth2], token_type: 'bearer' if opts[:oauth2]
           faraday.request :json
           # Response
-          faraday.response :logger, logger
-          faraday.response :raise_error
           faraday.response :json
+          faraday.response :raise_error
+          faraday.response :logger, logger
         end
       end
     end
