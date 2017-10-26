@@ -9,6 +9,7 @@ module Occi
         include Yell::Loggable
 
         DEFAULT_VERSION = 'v3'.freeze
+        DEFAULT_CONTENT_TYPE = 'application/json'.freeze
 
         attr_reader :version
         attr_accessor :type, :endpoint, :credentials
@@ -77,19 +78,15 @@ module Occi
 
         # :nodoc:
         def make(verb, relative_url, request = {})
-          conn = connection_factory(request)
-
-          begin
-            conn.send(verb) do |req|
-              req.url "#{endpoint}#{relative_url}"
-              req.headers['Accept'] = 'application/json'
-              req.headers['Content-Type'] = 'application/json'
-              req.headers.merge! request[:headers] if request[:headers]
-              req.body = request[:body] if request[:body]
-            end
-          rescue Faraday::Error::ClientError => ex
-            raise Occi::API::Errors::AuthenticationError, ex.message
+          connection_factory(request).send(verb) do |req|
+            req.url "#{endpoint}#{relative_url}"
+            req.headers['Accept'] = DEFAULT_CONTENT_TYPE
+            req.headers['Content-Type'] = DEFAULT_CONTENT_TYPE
+            req.headers.merge! request[:headers] if request[:headers]
+            req.body = request[:body] if request[:body]
           end
+        rescue Faraday::Error::ClientError => ex
+          raise Occi::API::Errors::AuthenticationError, ex.message
         end
 
         # :nodoc:
