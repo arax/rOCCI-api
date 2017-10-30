@@ -5,18 +5,19 @@ module Occi
     module Middleware
       # @author Boris Parak <parak@cesnet.cz>
       class OcciResponse < ::FaradayMiddleware::ResponseMiddleware
-        MIME_TYPES = %w[application/occi+json].freeze
+        MIME_TYPE = 'application/occi+json'.freeze
 
         define_parser do |body, parser_options|
-          mime_type = parser_options.fetch(:mime_type)
-          raise "Unsupported media type #{mime_type.inspect}" unless MIME_TYPES.include?(mime_type)
           send parser_options.fetch(:type), body, parser_options
         end
 
         class << self
           # :nodoc:
-          def model(_body, _options)
-            Occi::InfrastructureExt::Model.new
+          def model(body, _options)
+            m = Occi::InfrastructureExt::Model.new
+            Occi::Core::Parsers::JsonParser.model(body, {}, MIME_TYPE, m)
+            m.valid!
+            m
           end
 
           # :nodoc:
@@ -26,7 +27,7 @@ module Occi
           end
 
           # :nodoc:
-          def mixins(_body, options)
+          def categories(_body, options)
             options.fetch(:model)
             Set.new
           end

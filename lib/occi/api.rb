@@ -3,7 +3,7 @@ require 'active_support/all'
 require 'yell'
 require 'faraday'
 require 'faraday_middleware'
-require 'occi/core'
+require 'occi/infrastructure-ext'
 
 # Contains all OCCI-related classes and modules. This module
 # does not provide any additional functionality aside from
@@ -36,7 +36,7 @@ module Occi
     autoload :Auth, 'occi/api/auth'
 
     autoload :Authenticator, 'occi/api/authenticator'
-    autoload :Client, 'occi/api/client'
+    autoload :Clients, 'occi/api/clients'
   end
 end
 
