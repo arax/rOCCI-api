@@ -1,7 +1,7 @@
 module Occi
   module API
     module Helpers
-      describe Faraday do
+      describe Connector do
         it 'does something'
       end
     end

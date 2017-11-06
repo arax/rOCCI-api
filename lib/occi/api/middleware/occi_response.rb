@@ -1,21 +1,24 @@
-require 'faraday_middleware/response_middleware'
-
 module Occi
   module API
     module Middleware
       # @author Boris Parak <parak@cesnet.cz>
-      class OcciResponse < ::FaradayMiddleware::ResponseMiddleware
-        MIME_TYPE = 'application/occi+json'.freeze
+      class OcciResponse < ::Faraday::Middleware
+        # Supported request formats
+        SUPPORTED_FORMATS = {
+          json: 'applications/occi+json'.freeze,
+          uri_list: 'text/uri-list'.freeze
+        }.freeze
 
-        define_parser do |body, parser_options|
-          send parser_options.fetch(:type), body, parser_options
+        def call(env)
+          # Parse stuff
+          @app.call env
         end
 
         class << self
           # :nodoc:
           def model(body, _options)
             m = Occi::InfrastructureExt::Model.new
-            Occi::Core::Parsers::JsonParser.model(body, {}, MIME_TYPE, m)
+            Occi::Core::Parsers::JsonParser.model(body, {}, SUPPORTED_FORMATS.fetch(:json), m)
             m.valid!
             m
           end

@@ -4,7 +4,7 @@ module Occi
       # @author Boris Parak <parak@cesnet.cz>
       class Model
         include Yell::Loggable
-        include Helpers::Faraday
+        include Helpers::Connector
 
         DELEGATED_METHODS = %i[
           kinds mixins actions
@@ -18,7 +18,7 @@ module Occi
 
         # @param args [Hash] client options
         def initialize(args = {})
-          @endpoint = args.fetch(:endpoint).chomp('/')
+          @endpoint = normalize_endpoint(args.fetch(:endpoint))
           @credentials = args.fetch(:credentials)
           @options = args.fetch(:options, {})
 
@@ -28,7 +28,7 @@ module Occi
         # @return [Occi::InfrastructureExt::Model] server's model
         def model
           return @_model if @_model
-          @_model = make(:get, '/-/', type: :model).body
+          @_model = pull_model.body
         end
 
         def flush!
