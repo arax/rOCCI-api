@@ -7,7 +7,7 @@ module Occi
         include Helpers::Connector
 
         DELEGATED_METHODS = %i[
-          kinds mixins actions
+          kinds mixins actions categories
           find_related find_dependent find_by_identifier find_by_identifier!
           find_os_tpls find_resource_tpls find_availability_zones find_regions find_floatingippools
           instance_builder
@@ -28,7 +28,7 @@ module Occi
         # @return [Occi::InfrastructureExt::Model] server's model
         def model
           return @_model if @_model
-          @_model = pull_model.body
+          @_model = pull_model(endpoint).body
         end
 
         def flush!

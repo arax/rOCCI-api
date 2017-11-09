@@ -19,10 +19,11 @@ module Occi
         #
         #
         # @param kind [Occi::Core::Kind]
-        # @return [Occi::Core::Locations]
+        # @return [Array]
         def list(kind)
           raise ArgumentError, '`kind` is a required argument' unless kind
-          pull_locations(kind.location).body
+          locations = pull_locations(kind.location).body
+          locations.uris.to_a
         end
 
         #
@@ -56,7 +57,7 @@ module Occi
         #
         # @param kind [Occi::Core::Kind]
         # @param filter [Hash]
-        # @return [Occi::Core::Locations]
+        # @return [Array]
         def delete(kind, filter = {})
           locations = Occi::Core::Locations.new
 

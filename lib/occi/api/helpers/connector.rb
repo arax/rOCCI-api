@@ -34,9 +34,9 @@ module Occi
         # @param url [String] address to contact
         # @param request [Hash] request options
         def make(verb, url, request)
-          %i[verb url request].each do |o|
-            raise ArgumentError, "#{o} is a required argument" if send(o).blank?
-          end
+          raise ArgumentError, "`verb` is a required argument" if verb.blank?
+          raise ArgumentError, "`url` is a required argument" if url.blank?
+          raise ArgumentError, "`request` is a required argument" if request.blank?
 
           ff = Utils::FaradayFactory.new(credentials: credentials, options: options)
           ff.connection(request).send(verb) do |req|
@@ -50,7 +50,7 @@ module Occi
         def base_endpoint(endpoint)
           endpoint = URI.parse(endpoint)
 
-          endpoint.path = nil
+          endpoint.path = ''
           endpoint.fragment = nil
           endpoint.query = nil
 
