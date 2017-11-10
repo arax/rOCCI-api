@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'activesupport', '>= 4.0', '< 6'
   gem.add_runtime_dependency 'faraday', '>= 0.13', '< 1'
   gem.add_runtime_dependency 'faraday_middleware', '>= 0.12', '< 1'
-  gem.add_runtime_dependency 'occi-core', '>= 5.0.1', '< 6'
+  gem.add_runtime_dependency 'occi-core', '>= 5.0.4', '< 6'
   gem.add_runtime_dependency 'yell', '>= 2.0', '< 3'
 
   gem.add_development_dependency 'bundler', '>= 1.12', '< 2'
