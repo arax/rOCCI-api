@@ -28,7 +28,7 @@ module Occi
         # @return [Occi::InfrastructureExt::Model] server's model
         def model
           return @_model if @_model
-          @_model = pull_model(endpoint).body
+          @_model = pull_model.body
         end
 
         def flush!

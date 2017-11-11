@@ -24,5 +24,6 @@ client = Occi::API::Clients::Instances.new(
 compute_kind = mc.model.find_by_identifier!(Occi::Infrastructure::Constants::COMPUTE_KIND)
 puts 'Instances:'
 client.describe(compute_kind).resources.each do |compute|
-  puts "* #{compute.title} - #{compute.location} (IP: #{compute.networkinterfaces.first.attributes['occi.networkinterface.address'].value})"
+  ip_address = compute.networkinterfaces.first.attributes['occi.networkinterface.address'].value
+  puts "* #{compute.title} - #{compute.location} (IP: #{ip_address})"
 end

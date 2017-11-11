@@ -5,8 +5,8 @@ module Occi
       module Connector
         MODEL_LOCATION = '/-/'.freeze
 
-        # @param url [String] address to contact
-        def pull_model(url)
+        # :nodoc:
+        def pull_model
           request = { type: :model }
           make(:get, MODEL_LOCATION, request)
         end
@@ -34,9 +34,7 @@ module Occi
         # @param url [String] address to contact
         # @param request [Hash] request options
         def make(verb, url, request)
-          raise ArgumentError, "`verb` is a required argument" if verb.blank?
-          raise ArgumentError, "`url` is a required argument" if url.blank?
-          raise ArgumentError, "`request` is a required argument" if request.blank?
+          raise ArgumentError, '`verb`, `url`, `request` are required arguments' unless verb && url && request
 
           ff = Utils::FaradayFactory.new(credentials: credentials, options: options)
           ff.connection(request).send(verb) do |req|

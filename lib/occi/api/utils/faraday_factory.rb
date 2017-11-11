@@ -38,11 +38,11 @@ module Occi
         class << self
           # :nodoc:
           def profile!
-            ActiveSupport::Notifications.subscribe('request.faraday') do |name, starts, ends, _, env|
+            ActiveSupport::Notifications.subscribe('request.faraday') do |_name, starts, ends, _, env|
               url = env[:url]
               http_method = env[:method].to_s.upcase
               duration = ends - starts
-              logger.info { "Request - [%s] %s %s (%.3f s)" % [url.host, http_method, url.request_uri, duration] }
+              logger.info { format('Request - [%s] %s %s (%.3f s)', url.host, http_method, url.request_uri, duration) }
             end
           end
         end
