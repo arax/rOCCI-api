@@ -15,7 +15,7 @@ module Faraday
       # :nodoc:
       def configure_ssl(http, ssl)
         original_configure_ssl http, ssl
-        return unless ssl[:extra_chain_cert]
+        return unless ssl.key?(:extra_chain_cert)
         http.extra_chain_cert = ssl[:extra_chain_cert]
       end
     end

@@ -1,7 +1,9 @@
 # external deps
 require 'active_support/all'
 require 'yell'
-require 'occi/core'
+require 'faraday'
+require 'faraday_middleware'
+require 'occi/infrastructure-ext'
 
 # Contains all OCCI-related classes and modules. This module
 # does not provide any additional functionality aside from
@@ -26,12 +28,30 @@ module Occi
   #   Occi::API::STAGE_VERSION # => 'alpha.1'
   #
   # @author Boris Parak <parak@cesnet.cz>
-  module API; end
+  module API
+    autoload :Errors, 'occi/api/errors'
+    autoload :Utils, 'occi/api/utils'
+    autoload :Helpers, 'occi/api/helpers'
+    autoload :Middleware, 'occi/api/middleware'
+    autoload :Auth, 'occi/api/auth'
+
+    autoload :Authenticator, 'occi/api/authenticator'
+    autoload :Clients, 'occi/api/clients'
+  end
 end
 
 # Explicitly load monkey patches
 require 'occi/monkey_island/net_http'
 require 'occi/monkey_island/faraday_adapter_net_http'
+require 'occi/monkey_island/faraday_ssl_options'
+
+# Register Faraday middleware
+Faraday::Response.register_middleware \
+  occi: -> { Occi::API::Middleware::OcciResponse }
+
+Faraday::Request.register_middleware \
+  token: -> { Occi::API::Middleware::Token },
+  occi: -> { Occi::API::Middleware::OcciRequest }
 
 # Explicitly pull in versioning information
 require 'occi/api/version'
