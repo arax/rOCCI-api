@@ -41,8 +41,8 @@ module Occi
             ActiveSupport::Notifications.subscribe('request.faraday') do |_name, starts, ends, _, env|
               url = env[:url]
               http_method = env[:method].to_s.upcase
-              duration = ends - starts
-              logger.info { format('Request - [%s] %s %s (%.3f s)', url.host, http_method, url.request_uri, duration) }
+              data = { host: url.host, method: http_method, uri: url.request_uri, duration: ends - starts }
+              logger.info { format('Request - [%<host>s] %<method>s %<uri>s (%<duration>.3f s)', data) }
             end
           end
         end
